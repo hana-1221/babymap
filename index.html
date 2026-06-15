@@ -130,8 +130,8 @@
         right: 0;
         width: 100%;
         display: grid;
-        grid-template-columns: auto 1fr auto;
-        grid-template-areas: "brand . menu";
+        grid-template-columns: 46px 1fr 46px;
+        grid-template-areas: ". brand menu";
         align-items: center;
         column-gap: 12px;
         z-index: 500;
@@ -156,19 +156,21 @@
 
       .brand {
         grid-area: brand;
-        height: 46px;
+        height: 48px;
         padding: 0;
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0;
         font-size: 14px;
         font-weight: 900;
         white-space: nowrap;
+        justify-self: center;
       }
 
       .brand-logo {
-        width: 166px;
-        height: 38px;
+        width: 198px;
+        height: 46px;
         object-fit: contain;
         display: block;
       }
@@ -515,8 +517,7 @@
         line-height: 1.6;
       }
 
-      .menu-link,
-      .menu-summary {
+      .menu-link {
         min-height: 38px;
         border-radius: 999px;
         padding: 0 14px;
@@ -531,20 +532,6 @@
         font-size: 12px;
       }
 
-      .menu-details {
-        display: grid;
-        gap: 0;
-      }
-
-      .menu-summary {
-        width: fit-content;
-        list-style: none;
-        cursor: pointer;
-      }
-
-      .menu-summary::-webkit-details-marker {
-        display: none;
-      }
 
       .menu-action {
         min-height: 34px;
@@ -567,9 +554,9 @@
         border-radius: 50%;
         display: grid;
         place-items: center;
-        color: #696969;
-        background: #f3fafb;
-        border-color: #bfdade;
+        color: var(--ink);
+        background: #fff;
+        border-color: var(--ink);
       }
 
       .locate svg {
@@ -937,23 +924,23 @@
         .topbar {
           top: 0;
           width: 100%;
-          grid-template-columns: auto 1fr auto;
-          grid-template-areas: "brand . menu";
+          grid-template-columns: 44px 1fr 44px;
+          grid-template-areas: ". brand menu";
           column-gap: 10px;
           border-radius: 0;
           padding: max(7px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 7px max(12px, env(safe-area-inset-left));
         }
 
         .brand {
-          width: max-content;
-          height: 40px;
+          width: 100%;
+          height: 44px;
           padding: 0;
-          justify-self: start;
+          justify-self: center;
         }
 
         .brand-logo {
-          width: 158px;
-          height: 36px;
+          width: 188px;
+          height: 42px;
         }
 
         .searchbox {
@@ -1164,29 +1151,7 @@
         <div id="menuFavorites" class="menu-favorites"></div>
       </section>
       <section class="menu-section" aria-label="ご利用上の注意点">
-        <details class="menu-details">
-          <summary class="menu-summary">ご利用上の注意点</summary>
-          <div class="menu-subsections">
-            <div class="menu-subsection">
-              <h4>ご利用上の注意</h4>
-              <p class="menu-note">掲載情報やピン位置は実際と異なる場合があります。ご利用前に公式サイト・施設案内・現地表示をご確認ください。</p>
-            </div>
-            <div class="menu-subsection">
-              <h4>データ出典</h4>
-              <p class="menu-note">主なデータ出典は東京都オープンデータカタログサイト「赤ちゃん・ふらっと一覧」です。一部施設情報はJR東日本、東京都交通局、京王電鉄、東急電鉄、京急電鉄、各商業施設等の公式サイトを参考にしています。駅表示は国土交通省「国土数値情報（鉄道データ）」を参考にした試作用データです。</p>
-            </div>
-            <div class="menu-subsection">
-              <h4>お問い合わせ</h4>
-              <p class="menu-note">「ここにも授乳室・おむつ台があったよ」という情報提供はこちらからお願いします。</p>
-              <a class="menu-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdtoDKCN20WJx30ryppS7RhUHQLbw2N_D_kLITOkEGF0IGD7w/viewform?usp=sharing" target="_blank" rel="noopener">情報提供フォーム</a>
-            </div>
-            <div class="menu-subsection">
-              <h4>データ削除</h4>
-              <p class="menu-note">このブラウザ内に保存されたプロフィールとお気に入りを削除できます。</p>
-              <button id="menuResetData" class="menu-action" type="button">保存データ削除</button>
-            </div>
-          </div>
-        </details>
+        <a class="menu-link" href="./notice.html">ご利用上の注意点</a>
       </section>
       <section class="menu-section" aria-label="プライバシー">
         <a class="menu-link" href="./privacy.html">プライバシーポリシー</a>
@@ -3396,7 +3361,6 @@
       const entryForm = document.querySelector("#entryForm");
       function resetSavedData() { if (!confirm("この端末に保存したプロフィールとお気に入りを削除しますか？")) return; Object.keys(localStorage).filter((key) => key === "babymapProfile" || key === "oyakoCareMapProfile" || key.startsWith("babymapFavorites:") || key.startsWith("oyakoCareMapFavorites:")).forEach((key) => localStorage.removeItem(key)); favoriteIds = new Set(); entry.classList.remove("hidden"); closeMenu(); render(); }
       document.querySelector("#resetData").addEventListener("click", resetSavedData);
-      document.querySelector("#menuResetData").addEventListener("click", resetSavedData);
       const savedProfile = localStorage.getItem("babymapProfile") || localStorage.getItem("oyakoCareMapProfile");
       loadFavorites();
       if (savedProfile) entry.classList.add("hidden");

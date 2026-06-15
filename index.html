@@ -515,7 +515,8 @@
         line-height: 1.6;
       }
 
-      .menu-link {
+      .menu-link,
+      .menu-summary {
         min-height: 38px;
         border-radius: 999px;
         padding: 0 14px;
@@ -528,6 +529,21 @@
         border: 1px solid var(--line);
         font-weight: 900;
         font-size: 12px;
+      }
+
+      .menu-details {
+        display: grid;
+        gap: 0;
+      }
+
+      .menu-summary {
+        width: fit-content;
+        list-style: none;
+        cursor: pointer;
+      }
+
+      .menu-summary::-webkit-details-marker {
+        display: none;
       }
 
       .menu-action {
@@ -1105,8 +1121,8 @@
         <h2>メニュー</h2>
         <button id="menuClose" class="menu-close" type="button" aria-label="メニューを閉じる">×</button>
       </div>
-      <section class="menu-section" aria-label="マイページ">
-        <h3>マイページ</h3>
+      <section class="menu-section" aria-label="マイアカウント">
+        <h3>マイアカウント</h3>
         <dl id="profileSummary" class="profile-grid"></dl>
         <button id="editProfileButton" class="menu-action" type="button">編集</button>
         <form id="profileEditForm" class="profile-edit-form" hidden>
@@ -1148,27 +1164,29 @@
         <div id="menuFavorites" class="menu-favorites"></div>
       </section>
       <section class="menu-section" aria-label="ご利用上の注意点">
-        <h3>ご利用上の注意点</h3>
-        <div class="menu-subsections">
-          <div class="menu-subsection">
-            <h4>ご利用上の注意</h4>
-            <p class="menu-note">掲載情報やピン位置は実際と異なる場合があります。ご利用前に公式サイト・施設案内・現地表示をご確認ください。</p>
+        <details class="menu-details">
+          <summary class="menu-summary">ご利用上の注意点</summary>
+          <div class="menu-subsections">
+            <div class="menu-subsection">
+              <h4>ご利用上の注意</h4>
+              <p class="menu-note">掲載情報やピン位置は実際と異なる場合があります。ご利用前に公式サイト・施設案内・現地表示をご確認ください。</p>
+            </div>
+            <div class="menu-subsection">
+              <h4>データ出典</h4>
+              <p class="menu-note">主なデータ出典は東京都オープンデータカタログサイト「赤ちゃん・ふらっと一覧」です。一部施設情報はJR東日本、東京都交通局、京王電鉄、東急電鉄、京急電鉄、各商業施設等の公式サイトを参考にしています。駅表示は国土交通省「国土数値情報（鉄道データ）」を参考にした試作用データです。</p>
+            </div>
+            <div class="menu-subsection">
+              <h4>お問い合わせ</h4>
+              <p class="menu-note">「ここにも授乳室・おむつ台があったよ」という情報提供はこちらからお願いします。</p>
+              <a class="menu-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdtoDKCN20WJx30ryppS7RhUHQLbw2N_D_kLITOkEGF0IGD7w/viewform?usp=sharing" target="_blank" rel="noopener">情報提供フォーム</a>
+            </div>
+            <div class="menu-subsection">
+              <h4>データ削除</h4>
+              <p class="menu-note">このブラウザ内に保存されたプロフィールとお気に入りを削除できます。</p>
+              <button id="menuResetData" class="menu-action" type="button">保存データ削除</button>
+            </div>
           </div>
-          <div class="menu-subsection">
-            <h4>データ出典</h4>
-            <p class="menu-note">主なデータ出典は東京都オープンデータカタログサイト「赤ちゃん・ふらっと一覧」です。一部施設情報はJR東日本、東京都交通局、京王電鉄、東急電鉄、京急電鉄、各商業施設等の公式サイトを参考にしています。駅表示は国土交通省「国土数値情報（鉄道データ）」を参考にした試作用データです。</p>
-          </div>
-          <div class="menu-subsection">
-            <h4>お問い合わせ</h4>
-            <p class="menu-note">「ここにも授乳室・おむつ台があったよ」という情報提供はこちらからお願いします。</p>
-            <a class="menu-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdtoDKCN20WJx30ryppS7RhUHQLbw2N_D_kLITOkEGF0IGD7w/viewform?usp=sharing" target="_blank" rel="noopener">情報提供フォーム</a>
-          </div>
-          <div class="menu-subsection">
-            <h4>データ削除</h4>
-            <p class="menu-note">このブラウザ内に保存されたプロフィールとお気に入りを削除できます。</p>
-            <button id="menuResetData" class="menu-action" type="button">保存データ削除</button>
-          </div>
-        </div>
+        </details>
       </section>
       <section class="menu-section" aria-label="プライバシー">
         <a class="menu-link" href="./privacy.html">プライバシーポリシー</a>

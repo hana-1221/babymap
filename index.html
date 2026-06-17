@@ -1163,6 +1163,53 @@
     <script>
       const facilities = window.MAMAP_FACILITIES || [];
       const stations = window.BABYMAP_STATIONS || [];
+      const tokyoMetroNurseryInStations = "渋谷、外苑前、青山一丁目、赤坂見附、溜池山王、虎ノ門、新橋、日本橋、末広町、上野広小路、上野、稲荷町、田原町、浅草、南阿佐ケ谷、新高円寺、東高円寺、新中野、中野新橋、西新宿、新宿御苑前、四谷三丁目、四ツ谷、御茶ノ水、本郷三丁目、後楽園、茗荷谷、新大塚、中目黒、恵比寿、広尾、六本木、神谷町、虎ノ門ヒルズ、銀座、茅場町、仲御徒町、入谷、三ノ輪、南千住、北千住、中野、落合、高田馬場、神楽坂、飯田橋、竹橋、大手町、門前仲町、東陽町、南砂町、西葛西、葛西、代々木上原、明治神宮前〈原宿〉、表参道、乃木坂、赤坂、国会議事堂前、霞ケ関、日比谷、二重橋前〈丸の内〉、新御茶ノ水、根津、千駄木、西日暮里、町屋、北千住、綾瀬、北綾瀬、地下鉄成増、地下鉄赤塚、平和台、氷川台、小竹向原、千川、要町、池袋、東池袋、護国寺、飯田橋、市ケ谷、麴町、桜田門、銀座一丁目、豊洲、辰巳、新木場、半蔵門、神保町、水天宮前、清澄白河、住吉、錦糸町、押上〈スカイツリー前〉、目黒、白金台、白金高輪、麻布十番、六本木一丁目、永田町、東大前、本駒込、駒込、西ケ原、王子、王子神谷、志茂、赤羽岩淵、雑司が谷、西早稲田、東新宿、新宿三丁目、北参道".split("、");
+      const tokyoMetroNurseryOutStations = "表参道、赤坂見附、虎ノ門、京橋、三越前、神田、荻窪、方南町、中野富士見町、中野坂上、新宿、新宿三丁目、四谷三丁目、国会議事堂前、霞ケ関、銀座、東京、淡路町、池袋、日比谷、東銀座、築地、八丁堀、人形町、小伝馬町、秋葉原、上野、入谷、三ノ輪、高田馬場、早稲田、飯田橋、九段下、茅場町、木場、代々木公園、表参道、国会議事堂前、日比谷、湯島、護国寺、江戸川橋、麴町、永田町、有楽町、銀座一丁目、新富町、月島、表参道、半蔵門、後楽園、駒込".split("、");
+      const normalizeTokyoMetroStationName = (name = "") => name
+        .replace(/駅$/u, "")
+        .replace(/[〈＜].*?[〉＞]/gu, "")
+        .replace(/[（(].*?[）)]/gu, "")
+        .replace(/麴/gu, "麹")
+        .replace(/ヶ/gu, "ケ")
+        .trim();
+      const tokyoMetroNurseryLocations = new Map();
+      const addTokyoMetroNurseryLocation = (stationName, location) => {
+        const normalizedName = normalizeTokyoMetroStationName(stationName);
+        if (!normalizedName) return;
+        if (!tokyoMetroNurseryLocations.has(normalizedName)) tokyoMetroNurseryLocations.set(normalizedName, new Set());
+        tokyoMetroNurseryLocations.get(normalizedName).add(location);
+      };
+      tokyoMetroNurseryInStations.forEach((stationName) => addTokyoMetroNurseryLocation(stationName, "改札内"));
+      tokyoMetroNurseryOutStations.forEach((stationName) => addTokyoMetroNurseryLocation(stationName, "改札外"));
+      const tokyoMetroStationByName = new Map();
+      stations.forEach((station) => {
+        [station.name, station.name?.replace(/駅$/u, ""), ...(station.aliases || [])].forEach((name) => {
+          const normalizedName = normalizeTokyoMetroStationName(name);
+          if (normalizedName) tokyoMetroStationByName.set(normalizedName, station);
+        });
+      });
+      const tokyoMetroStationId = (stationName) => Array.from(stationName).map((char) => char.charCodeAt(0).toString(16)).join("-");
+      const tokyoMetroNurseryFacilities = Array.from(tokyoMetroNurseryLocations.entries()).map(([stationName, locations]) => {
+        const station = tokyoMetroStationByName.get(stationName);
+        if (!station) return null;
+        const locationText = Array.from(locations).join("・");
+        return {
+          id: `official-tokyometro-${tokyoMetroStationId(stationName)}-nursery`,
+          area: "東京メトロ",
+          name: `東京メトロ ${station.name} おむつ台付きトイレ`,
+          station: `${station.name} / ${(station.lines || ["東京メトロ"]).join("・")}`,
+          address: `${station.name}構内`,
+          days: "全日",
+          hours: "駅営業時間に準拠",
+          nursing: false,
+          diaper: true,
+          lat: station.lat,
+          lng: station.lng,
+          diaperFloor: `${locationText}のおむつ台付きトイレ`,
+          sourceCheckedAt: "2026-06-17",
+          positionStatus: "official_tokyometro_station_reference",
+        };
+      }).filter(Boolean);
       const supplementalFacilities = [
         {
           id: "official-jre-shinagawa-babyroom",
@@ -3154,6 +3201,7 @@
         }
       ];
       supplementalFacilities.forEach((item) => { if (!facilities.some((row) => row.id === item.id)) facilities.push(item); });
+      tokyoMetroNurseryFacilities.forEach((item) => { if (!facilities.some((row) => row.id === item.id)) facilities.push(item); });
       const coordinateCorrections = {
         "akachanflat-0079": {
           lat: 35.63012,
